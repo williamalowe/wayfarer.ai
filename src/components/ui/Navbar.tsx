@@ -39,7 +39,7 @@ const Navbar = () => {
         </ul>
       </nav>
       <div className="flex-1 flex items-end justify-center uppercase font-bold">
-        <Link href={"/sign-up"}>
+        <Link href={"/sign-in"}>
           <div className="px-4 py-2 bg-black text-white hover:bg-[#666666] transition">
             Get Started
           </div>

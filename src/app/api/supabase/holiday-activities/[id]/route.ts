@@ -1,5 +1,3 @@
-// TODO: Fix typing issue
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -11,10 +9,10 @@ const supabase = createClient(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: any } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const activityId = params.id
+    const { id: activityId } = await params
 
     if (!activityId) {
       return NextResponse.json(
@@ -67,10 +65,10 @@ export async function DELETE(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: any } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const activityId = params.id
+    const { id: activityId } = await params
     const body = await request.json()
 
     if (!activityId) {

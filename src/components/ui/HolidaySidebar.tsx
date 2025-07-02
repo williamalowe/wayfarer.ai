@@ -18,15 +18,16 @@ const HolidaySidebar = ({ selectedHoliday, onHolidaySelect }: HolidaySidebarProp
     setShowCreateModal(!showCreateModal);
   }
 
-  const handleHolidayClick = (holiday: Holiday) => {
-    if (selectedHoliday?.id === holiday.id) {
-      // If clicking the same holiday, deselect it
-      onHolidaySelect(null);
-    } else {
-      // Select the new holiday
-      onHolidaySelect(holiday);
-    }
+const handleHolidayClick = (holiday: Holiday) => {
+  console.log('Holiday object:', holiday);
+  console.log('Holiday keys:', Object.keys(holiday));
+  
+  if (selectedHoliday?.id === holiday.id) {
+    onHolidaySelect(null);
+  } else {
+    onHolidaySelect(holiday);
   }
+}
 
   if (loading) {
     return (
@@ -110,7 +111,7 @@ const HolidaySidebar = ({ selectedHoliday, onHolidaySelect }: HolidaySidebarProp
                         )}
                         <div className="mt-2 text-xs text-gray-600">
                           👥 {holiday.adults} adult{holiday.adults !== 1 ? 's' : ''}
-                          {holiday.children > 0 && `, ${holiday.children} child${holiday.children !== 1 ? 'ren' : ''}`}
+                          {holiday.children! > 0 && `, ${holiday.children} child${holiday.children !== 1 ? 'ren' : ''}`}
                         </div>
                       </div>
                     </div>

@@ -1,9 +1,12 @@
+// TODO: Resolve Typing Issues
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import { useState, useEffect } from 'react'
 import { Holiday } from '@/types/Holiday'
 import { HolidayActivity } from '@/types/HolidayActivity'
 import AddActivityModal from './AddActivityModal'
+import PlanDayModal from './PlanDayModal'
 
 interface ItineraryProps {
   selectedHoliday: Holiday | null
@@ -27,7 +30,9 @@ interface HolidayDay {
 const DashboardItinerary = ({ selectedHoliday }: ItineraryProps) => {
   const [holidayDays, setHolidayDays] = useState<HolidayDay[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isPlanDayModalOpen, setIsPlanDayModalOpen] = useState(false)
   const [selectedDay, setSelectedDay] = useState<{ dayNumber: number; date: string } | null>(null)
+  const [selectedPlanDay, setSelectedPlanDay] = useState<{ dayNumber: number; date: string } | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [deletingActivity, setDeletingActivity] = useState<string | null>(null)
@@ -88,18 +93,20 @@ const DashboardItinerary = ({ selectedHoliday }: ItineraryProps) => {
   // Transform API activities to display format
   const transformActivitiesToDays = (activities: HolidayActivity[], holidayDays: HolidayDay[]): HolidayDay[] => {
     // Create a copy of holiday days
-    const daysWithActivities = holidayDays.map(day => ({ ...day, activities: [] }))
-    
+const daysWithActivities: HolidayDay[] = holidayDays.map(day => ({ 
+  ...day, 
+  activities: []
+}))    
     // Group activities by day number
     activities.forEach(activity => {
-      const dayIndex = activity.day_number - 1 // Convert to 0-based index
+      const dayIndex = activity.day_number! - 1 // Convert to 0-based index
       
       if (dayIndex >= 0 && dayIndex < daysWithActivities.length) {
         const transformedActivity: DayActivity = {
           id: activity.id,
-          time: activity.start_time,
+          time: activity.start_time!,
           activity: activity.activity_name,
-          location: activity.venue_name,
+          location: activity.venue_name!,
           description: activity.description || undefined,
           sort_order: activity.sort_order || 0
         }
@@ -146,9 +153,12 @@ const DashboardItinerary = ({ selectedHoliday }: ItineraryProps) => {
   }
 
   const handlePlanDay = (dayNumber: number) => {
-    // Placeholder function for planning all day's activities
-    console.log(`Planning activities for day ${dayNumber}`)
-    // TODO: Implement AI-powered day planning functionality
+    const day = holidayDays.find(d => d.day === dayNumber)
+    if (day) {
+      setError(null) // Clear any existing errors
+      setSelectedPlanDay({ dayNumber, date: day.date })
+      setIsPlanDayModalOpen(true)
+    }
   }
 
   const handleModalClose = () => {
@@ -156,9 +166,29 @@ const DashboardItinerary = ({ selectedHoliday }: ItineraryProps) => {
     setSelectedDay(null)
   }
 
+  const handlePlanDayModalClose = () => {
+    setIsPlanDayModalOpen(false)
+    setSelectedPlanDay(null)
+  }
+
   // Refresh activities after adding a new one
   const handleActivityAdded = () => {
     handleModalClose()
+    setError(null) // Clear any existing errors
+    
+    // Refresh activities from API
+    if (selectedHoliday) {
+      const emptyDays = generateHolidayDays(selectedHoliday.start_date, selectedHoliday.end_date)
+      fetchActivities(selectedHoliday.id).then(activities => {
+        const populatedDays = transformActivitiesToDays(activities, emptyDays)
+        setHolidayDays(populatedDays)
+      })
+    }
+  }
+
+  // Refresh activities after generating a day plan
+  const handlePlanGenerated = () => {
+    handlePlanDayModalClose()
     setError(null) // Clear any existing errors
     
     // Refresh activities from API
@@ -411,7 +441,7 @@ const DashboardItinerary = ({ selectedHoliday }: ItineraryProps) => {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Add Activity Modal */}
       <AddActivityModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
@@ -419,6 +449,16 @@ const DashboardItinerary = ({ selectedHoliday }: ItineraryProps) => {
         holidayId={selectedHoliday.id}
         dayNumber={selectedDay?.dayNumber || 0}
         dayDate={selectedDay?.date || ''}
+      />
+
+      {/* Plan Day Modal */}
+      <PlanDayModal
+        isOpen={isPlanDayModalOpen}
+        onClose={handlePlanDayModalClose}
+        onPlanGenerated={handlePlanGenerated}
+        holidayId={selectedHoliday.id}
+        dayNumber={selectedPlanDay?.dayNumber || 0}
+        dayDate={selectedPlanDay?.date || ''}
       />
     </>
   )

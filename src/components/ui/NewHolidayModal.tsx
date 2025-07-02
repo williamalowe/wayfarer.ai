@@ -11,15 +11,24 @@ interface NewHolidayModalProps {
 
 const NewHolidayModal = ({ updateModalStatus, onHolidaySelect }: NewHolidayModalProps) => {
   const { addHoliday } = useHolidays()
-  const [newHoliday, setNewHoliday] = useState({
-    name: '',
-    destination: '',
-    start_date: '',
-    end_date: '',
-    adults: 1,
-    children: 0,
-    description: ''
-  })
+const [newHoliday, setNewHoliday] = useState({
+  name: '',
+  destination: '',
+  start_date: '',
+  end_date: '',
+  adults: 1,
+  children: 0,
+  description: '',
+  // Add the missing fields with default values
+  estimated_budget: null,
+  actual_budget: null,
+  currency: null,
+  status: 'planning', // or null if you prefer
+  priority: null,
+  accommodation: null,
+  transportation: null,
+  notes: null
+})
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -44,15 +53,24 @@ const NewHolidayModal = ({ updateModalStatus, onHolidaySelect }: NewHolidayModal
       const createdHoliday = await addHoliday(newHoliday)
       
       // Reset form
-      setNewHoliday({ 
-        name: '', 
-        destination: '', 
-        start_date: '', 
-        end_date: '', 
-        adults: 1, 
-        children: 0, 
-        description: '' 
-      })
+setNewHoliday({ 
+  name: '', 
+  destination: '', 
+  start_date: '', 
+  end_date: '', 
+  adults: 1, 
+  children: 0, 
+  description: '',
+  // Reset the additional fields
+  estimated_budget: null,
+  actual_budget: null,
+  currency: null,
+  status: 'planning',
+  priority: null,
+  accommodation: null,
+  transportation: null,
+  notes: null
+})
       
       // Select the newly created holiday
       onHolidaySelect(createdHoliday)

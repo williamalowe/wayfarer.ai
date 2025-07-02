@@ -1,14 +1,14 @@
-'use client'
-
+// TODO: Fix typing issues
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext, useContext, useEffect, useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { User } from '@supabase/supabase-js'
+import { User, SupabaseClient } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 
 interface AuthContextType {
   user: User | null
   loading: boolean
-  supabase: ReturnType<typeof createClientComponentClient>
+  supabase: SupabaseClient<any, "public", any>  // Use explicit typing instead of ReturnType
   signOut: () => Promise<void>
 }
 

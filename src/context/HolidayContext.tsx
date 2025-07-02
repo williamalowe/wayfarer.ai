@@ -2,24 +2,14 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useAuth } from './AuthContext'
+import { Holiday } from '@/types/Holiday' // Import the proper Holiday type
 
-interface Holiday {
-  id: string
-  name: string
-  destination: string
-  start_date: string
-  end_date: string
-  adults: number
-  children: number
-  description?: string
-  user_id: string
-  created_at: string
-}
+// Remove the local Holiday interface - it's already defined in Holiday.ts
 
 interface HolidayContextType {
   holidays: Holiday[]
   loading: boolean
-  addHoliday: (holiday: Omit<Holiday, 'id' | 'user_id' | 'created_at'>) => Promise<Holiday>
+  addHoliday: (holiday: Omit<Holiday, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => Promise<Holiday>
   refreshHolidays: () => Promise<void>
   nextHoliday: Holiday | null
 }
@@ -62,7 +52,7 @@ export function HolidayProvider({ children }: { children: React.ReactNode }) {
     fetchHolidays()
   }, [user])
 
-  const addHoliday = async (holidayData: Omit<Holiday, 'id' | 'user_id' | 'created_at'>): Promise<Holiday> => {
+  const addHoliday = async (holidayData: Omit<Holiday, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<Holiday> => {
     if (!user) throw new Error('User must be authenticated')
 
     const { data, error } = await supabase

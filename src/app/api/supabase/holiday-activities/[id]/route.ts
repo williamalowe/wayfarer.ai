@@ -7,15 +7,12 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-interface RouteParams {
-  params: {
-    id: string
-  }
-}
-
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const activityId = params.id
+    const { id: activityId } = await params
 
     if (!activityId) {
       return NextResponse.json(
@@ -66,9 +63,12 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const activityId = params.id
+    const { id: activityId } = await params
     const body = await request.json()
 
     if (!activityId) {

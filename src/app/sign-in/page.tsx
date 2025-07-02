@@ -1,14 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-// import { useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
 
 export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-//   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const { supabase } = useAuth()
 
   const handleOAuthSignIn = async (provider: 'google' | 'apple') => {
     try {
@@ -18,7 +16,7 @@ export default function SignInPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       })
 

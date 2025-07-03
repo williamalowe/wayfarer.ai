@@ -13,5 +13,5 @@ export async function GET(request: NextRequest) {
   }
 
   // Redirect to dashboard or home page after successful authentication
-  return NextResponse.redirect(new URL('/dashboard', requestUrl.origin))
+  return NextResponse.redirect(new URL('/dashboard', '/'))
 }

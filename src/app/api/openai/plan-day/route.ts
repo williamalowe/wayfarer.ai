@@ -6,11 +6,11 @@ import { z } from 'zod'
 
 
 // Make sure you're using the same variable name
-const apiKey = process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+// const apiKey = process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
 // Initialize OpenAI client
 const openai = new OpenAI({
-  apiKey: apiKey,
+  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY
 })
 
 // Schema for a single activity

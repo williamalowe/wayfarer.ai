@@ -29,7 +29,7 @@ const DayPlanSchema = z.object({
 
 // Database interaction function (you'll need to implement based on your DB setup)
 async function saveActivitiesToDatabase(holidayId: string, dayNumber: number, dayDate: string, activities: z.infer<typeof ActivitySchema>[]) {
-  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+  const baseUrl = process.env.NEXTAUTH_URL || 'https://wayfarer-ai.vercel.app/'
   
   try {
     const savePromises = activities.map(async (activity) => {
@@ -69,7 +69,7 @@ async function saveActivitiesToDatabase(holidayId: string, dayNumber: number, da
 // Function to get existing activities for the holiday
 async function getExistingActivities(holidayId: string) {
   try {
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+    const baseUrl = process.env.NEXTAUTH_URL || 'https://wayfarer-ai.vercel.app/'
     const response = await fetch(`${baseUrl}/api/supabase/holiday-activities?holiday_id=${holidayId}`)
     
     if (!response.ok) {
@@ -87,7 +87,7 @@ async function getExistingActivities(holidayId: string) {
 // Function to get holiday context (you might want to fetch from your database)
 async function getHolidayContext(holidayId: string) {
   try {
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+    const baseUrl = process.env.NEXTAUTH_URL || 'https://wayfarer-ai.vercel.app/'
     const response = await fetch(`${baseUrl}/api/supabase/holidays/${holidayId}`)
     
     if (!response.ok) {
